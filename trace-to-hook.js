@@ -1,17 +1,11 @@
 var config = {
-    package: 'com.your.apps',
+    package: 'com.your.apps', // Adjust this one
     printSummary: true,
     printDefinition: true,
     printArgs: true,
     printReturn: true,
     excludeStrings: [],
     timeout: 500
-};
-
-var levels = {
-    info: 'INFO',
-    warn: 'WARN',
-    error: 'ERROR'
 };
 
 var colors = {
@@ -35,18 +29,6 @@ var colors = {
         yellow: '\x1b[33;11m'
     }
 };
-
-function log(level, text) {
-    console.log(
-        `${
-            level === levels.info
-                ? colors.light.blue
-                : level === levels.warn
-                ? colors.light.yellow
-                : colors.light.red
-        }[${level}]${colors.reset} ${text}`
-    );
-}
 
 function TraceMethods() {
     console.log();
@@ -72,29 +54,29 @@ function TraceMethods() {
                     }
 
                     if (config.printSummary && !classLogged) {
-                        log(levels.info, `Class: ${c}`);
+                        console.log(`${colors.light.blue}[INFO]${colors.reset} Class: ${c}`);
                         classLogged = true;
                     }
 
                     if (config.printSummary) {
-                        log(levels.info, `Method: ${c}.${name}`);
+                        console.log(`${colors.light.blue}[INFO]${colors.reset} Method: ${c}.${name}`);
                     }
 
                     var overloads = method.overloads;
                     for (var overload of overloads) {
                         overload.implementation = function () {
-                            var callMessage = `Function: ${
+                            var callMessage = `Function: ${colors.light.green}${
                                 config.printDefinition
                                     ? m
                                     : m.getDeclaringClass().getName() + '.' + name
-                            }`;
+                            }${colors.reset}`;
 
                             var argMessages = [];
                             if (config.printArgs) {
                                 var i = 0;
                                 for (var arg of arguments) {
                                     if (arg !== null && arg !== undefined) {
-                                        argMessages.push(`Args[${i}]: ${arg.toString()}`);
+                                        argMessages.push(`Args[${i}]: ${colors.light.yellow}${arg.toString()}${colors.reset}`);
                                     }
                                     i++;
                                 }
@@ -104,12 +86,12 @@ function TraceMethods() {
 
                             if (config.printReturn) {
                                 var returnMessage = ret !== null && ret !== undefined
-                                    ? ` [Return: ${ret.toString()}]`
+                                    ? ` [Return: ${colors.light.red}${ret.toString()}${colors.reset}]`
                                     : '';
                                 if (argMessages.length > 0) {
-                                    log(levels.warn, `${callMessage}${returnMessage} - ${argMessages.join(', ')}`);
+                                    console.log(`${colors.light.blue}[INFO]${colors.reset} ${callMessage}${returnMessage} - ${argMessages.join(', ')}`);
                                 } else {
-                                    log(levels.warn, `${callMessage}${returnMessage}`);
+                                    console.log(`${colors.light.blue}[INFO]${colors.reset} ${callMessage}${returnMessage}`);
                                 }
                             }
 
@@ -118,28 +100,29 @@ function TraceMethods() {
                     }
                 });
             } catch (e) {
-                log(levels.error, e);
+                console.log(`${colors.light.red}[ERROR]${colors.reset} ${e}`);
             }
         });
 }
 
 function HookMethods() {
     try {
-        let CallMethod = Java.use("com.your.apps.MainActivity");
+        let CallMethod = Java.use("com.your.apps.MainActivity"); // Adjust this one
         CallMethod["func1"].implementation = function() {
             return false;
         };
         CallMethod["func2"].implementation = function() {
             return false;
         };
+        // Add other function to hook here...
     } catch (e) {
-        log(levels.error, e);
+        console.log(`${colors.light.red}[ERROR]${colors.reset} ${e}`);
     }
 }
 
 setTimeout(function () {
     Java.perform(function () {
         TraceMethods();
-        // HookMethods(); 
+        HookMethods(); 
     });
 }, config.timeout);
