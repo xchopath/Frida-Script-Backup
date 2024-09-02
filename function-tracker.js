@@ -107,8 +107,11 @@ function tracePackage() {
                                 var returnMessage = ret !== null && ret !== undefined
                                     ? ` [Return: ${ret.toString()}]`
                                     : '';
-                                
-                                log(levels.warn, `${callMessage}${returnMessage}`);
+                                if (argMessages != '') {
+                                    log(levels.warn, `${callMessage}${returnMessage} - ${argMessages}`);
+                                } else {
+                                    log(levels.warn, `${callMessage}${returnMessage}`);
+                                }
                             }
 
                             return ret;
