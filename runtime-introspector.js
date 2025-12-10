@@ -1,4 +1,3 @@
-// overpowered-tracer.js
 Java.perform(function () {
     const PREFIX = "com.example.something";
     const LOG_ARGS = true;
