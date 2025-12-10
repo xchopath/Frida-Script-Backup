@@ -1,6 +1,6 @@
 // overpowered-tracer.js
 Java.perform(function () {
-    const PREFIX = "tech.kbtg.pocme"; // ubah sesuai kebutuhan
+    const PREFIX = "com.example.something";
     const LOG_ARGS = true;
     const LOG_RET = false;
 
